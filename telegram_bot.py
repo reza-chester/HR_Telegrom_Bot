@@ -1,10 +1,7 @@
-import logging
-import queue  
+import logging  
 import requests  
 from telegram import Update  
-from telegram.ext import *
-
-my_queue = queue.Queue()
+from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext  
 
 # تنظیمات لاگ‌گذاری  
 logging.basicConfig(  
@@ -21,48 +18,37 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def handle_message(update: Update, context: CallbackContext) -> None:  
     #"""دریافت کد و ارسال آن به API."""  
-    user_code = update.message.text  
-    response_message = send_code_to_api(user_code)  
-    update.message.reply_text(response_message)  
+    user_code = update.message.text 
+    update.message.reply_text(user_code)   
+    # response_message = send_code_to_api(user_code)  
+    # update.message.reply_text(response_message)  
 
-def send_code_to_api(code: str) -> str:  
-    #"""ارسال کد به API و دریافت پاسخ."""  
-    try:  
-        response = requests.post(API_URL, json={"code": code})  
-        response.raise_for_status()  # در صورت بروز خطا، استثنا ایجاد می‌کند  
-        return response.text  # پاسخ دریافتی از API  
-    except requests.exceptions.RequestException as e:  
-        logger.error(f"Error sending code to API: {e}")  
-        return "متاسفم، خطایی در ارسال کد به وجود آمد."  
+# def send_code_to_api(code: str) -> str:  
+#     #"""ارسال کد به API و دریافت پاسخ."""  
+#     try:  
+#         response = requests.post(API_URL, json={"code": code})  
+#         response.raise_for_status()  # در صورت بروز خطا، استثنا ایجاد می‌کند  
+#         return response.text  # پاسخ دریافتی از API  
+#     except requests.exceptions.RequestException as e:  
+#         logger.error(f"Error sending code to API: {e}")  
+#         return "متاسفم، خطایی در ارسال کد به وجود آمد."  
 
 def main() -> None:  
-    application = Application.builder().token("7775436060:AAEiPn2RqBbOBTtWjRIj8WJST7xlwxxcB5Q").build()
+    #"""اجرا کردن بات."""  
+    # توکن بات خود را اینجا وارد کنید  
+    updater = Updater("7775436060:AAEiPn2RqBbOBTtWjRIj8WJST7xlwxxcB5Q")  
 
-    # Commands
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('dadashi', start))
+    # دریافت دیسپاچینگ  
+    dispatcher = updater.dispatcher  
+
+    # تعریف دستورات و هندرها  
+    dispatcher.add_handler(CommandHandler("start", start))  
+
+    # شروع بات  
+    updater.start_polling()  
     
-
-    # Run bot
-    application.run_polling(1.0)
-    
-    # #"""اجرا کردن بات."""  
-    # # توکن بات خود را اینجا وارد کنید  
-    # updater = Updater("7775436060:AAEiPn2RqBbOBTtWjRIj8WJST7xlwxxcB5Q",my_queue)  
-
-    # # دریافت دیسپاچینگ  
-    # dispatcher = updater.dispatcher  
-
-    # # تعریف دستورات و هندرها  
-    # dispatcher.add_handler(CommandHandler("start", start))  
-    # dispatcher.add_handler(CommandHandler("dada", start))  
-    # # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))  
-
-    # # شروع بات  
-    # updater.start_polling()  
-    
-    # # توقف بات با فشار دادن Ctrl+C  
-    # updater.idle()  
+    # توقف بات با فشار دادن Ctrl+C  
+    updater.idle()  
 
 if __name__ == '__main__':  
     main()
