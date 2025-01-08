@@ -1,7 +1,7 @@
 import logging  
 import requests  
 from telegram import Update  
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext  
+from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext  
 
 # تنظیمات لاگ‌گذاری  
 logging.basicConfig(  
@@ -42,7 +42,8 @@ def main() -> None:
 
     # تعریف دستورات و هندرها  
     dispatcher.add_handler(CommandHandler("start", start))  
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))  
+    dispatcher.add_handler(CommandHandler("dada", start))  
+    # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))  
 
     # شروع بات  
     updater.start_polling()  
