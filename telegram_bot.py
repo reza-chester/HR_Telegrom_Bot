@@ -1,7 +1,9 @@
-import logging  
+import logging
+import queue  
 import requests  
 from telegram import Update  
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext  
+my_queue = queue.Queue()
 
 # تنظیمات لاگ‌گذاری  
 logging.basicConfig(  
@@ -35,7 +37,7 @@ def send_code_to_api(code: str) -> str:
 def main() -> None:  
     #"""اجرا کردن بات."""  
     # توکن بات خود را اینجا وارد کنید  
-    updater = Updater("7775436060:AAEiPn2RqBbOBTtWjRIj8WJST7xlwxxcB5Q")  
+    updater = Updater("7775436060:AAEiPn2RqBbOBTtWjRIj8WJST7xlwxxcB5Q",my_queue)  
 
     # دریافت دیسپاچینگ  
     dispatcher = updater.dispatcher  
