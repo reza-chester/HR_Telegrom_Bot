@@ -39,3 +39,36 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             caption=description,
             parse_mode="Markdown",
         )
+
+# async def check_group_members(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     try:
+        
+#         async for member in context.bot.get_chat_members(CHAT_ID):  
+#         chat_members = await context.bot.get_chat_administrators(chat_id=CHAT_ID)
+#         unauthorized_users = []
+#         now = datetime.datetime.now()
+#         until_date = now + datetime.timedelta(days=1,hours=-1)  
+#         until_timestamp = int(until_date.timestamp())
+#         for member in chat_members:
+#             print(member.user.first_name)
+#             print(member.user.last_name)
+#             print(member.user.id)
+#             if member.status not in ["administrator", "creator"]:
+#                 user_id = member.user.id
+#                 # if user_id not in AUTHORIZED_USERS:
+#                 unauthorized_users.append(user_id)
+#                 print(member.user.first_name)
+#                 print(member.user.last_name)
+#                 print(member.user.id)
+#                 await context.bot.ban_chat_member(chat_id=CHAT_ID, user_id=user_id, until_date=until_timestamp)
+#                     # await context.bot.unban_chat_member(chat_id=CHAT_ID, user_id=user_id) 
+#                 print(f"User {user_id} has been removed.")
+
+#         if unauthorized_users:
+#             await update.message.reply_text(f"{len(unauthorized_users)} کاربران غیرمجاز حذف شدند.")
+#         else:
+#             await update.message.reply_text("همه کاربران مجاز هستند.")
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         await update.message.reply_text("خطایی رخ داد.")
+

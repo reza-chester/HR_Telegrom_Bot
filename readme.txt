@@ -1,0 +1,1 @@
+source /home/rezaches/virtualenv/joining/3.10/bin/activate && cd /home/rezaches/joining
