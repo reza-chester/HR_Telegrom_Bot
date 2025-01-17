@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 from telegram import ChatMember, ChatMemberUpdated
 from define import CHAT_ID
@@ -8,6 +9,15 @@ async def unban_users(context):
     for id in users_list_id:
         await context.bot.unban_chat_member(chat_id=CHAT_ID, user_id=id)
     
+async def create_temp_invite_link(bot):
+    now = datetime.datetime.now()
+    now_plus_10 = now + datetime.timedelta(minutes = 5,hours=-1)
+    invite_link = await bot.create_chat_invite_link(
+        chat_id=CHAT_ID,
+        expire_date=now_plus_10,  
+        member_limit=1  
+    )
+    return invite_link.invite_link
 
 
 

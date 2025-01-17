@@ -72,3 +72,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #         print(f"Error: {e}")
 #         await update.message.reply_text("خطایی رخ داد.")
 
+            # await update.effective_chat.send_message(
+            #     f"{member_name} was added by {cause_name}. Welcome!",
+            #     parse_mode=ParseMode.HTML,
+            # )
+    
+    # await update.effective_chat.send_message(
+        #     f"{member_name} is no longer with us. Thanks a lot, {cause_name} ...",
+        #     parse_mode=ParseMode.HTML,
+        # )
