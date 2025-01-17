@@ -2,13 +2,25 @@ import datetime
 from typing import Optional
 from telegram import ChatMember, ChatMemberUpdated
 from define import CHAT_ID
-
+from telegram.ext import ContextTypes
 
 async def unban_users(context):
     users_list_id=[181174595]
     for id in users_list_id:
         await context.bot.unban_chat_member(chat_id=CHAT_ID, user_id=id)
-    
+
+async def user_joined_chat(context: ContextTypes.DEFAULT_TYPE,user_id):
+    try:
+       res = await context.bot.get_chat_member(chat_id=CHAT_ID, user_id=user_id)
+       if res.status in [
+        ChatMember.MEMBER,
+        ChatMember.OWNER,
+        ChatMember.ADMINISTRATOR,
+        ChatMember.RESTRICTED
+        ] : return True
+    except Exception as e:
+       return False
+
 async def create_temp_invite_link(bot):
     now = datetime.datetime.now()
     now_plus_10 = now + datetime.timedelta(minutes = 5,hours=-1)

@@ -26,11 +26,10 @@ async def handle_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     temp_link = await create_temp_invite_link(bot)
                     photo_path = "img/join-us.jpg"
                     if update.message:
-                        await context.bot.send_photo(
-                            chat_id=update.message.chat_id,
+                        await update.message.reply_photo(
                             photo=open(photo_path, "rb"),
                             caption=f"کد صحیح است! 🎉\nاین لینک فقط برای شما معتبر است و ظرف 5 دقیقه منقضی می‌شود:\n\n{temp_link}",
-                            parse_mode=ParseMode.MARKDOWN,
+                            parse_mode=ParseMode.HTML,
                         )
                 else:
                     await update.message.reply_text(
@@ -58,15 +57,14 @@ async def handle_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 temp_link = await create_temp_invite_link(bot)
                 photo_path = "img/join-us.jpg"
                 if update.message:
-                    await context.bot.send_photo(
-                            chat_id=update.message.chat_id,
+                    await update.message.reply_photo(
                             photo=open(photo_path, "rb"),
                             caption=f"کد صحیح است! 🎉\nاین لینک فقط برای شما معتبر است و ظرف 5 دقیقه منقضی می‌شود:\n\n{temp_link}",
-                            parse_mode=ParseMode.MARKDOWN,
+                            parse_mode=ParseMode.HTML,
                         )
             else:
                 context.user_data.clear()  
-                await update.message.reply_text("نام کاربری یا کد اختصاصی صحیح *نیست*.\n\n/joinrequest",parse_mode=ParseMode.MARKDOWN)
+                await update.message.reply_text("نام کاربری یا کد اختصاصی صحیح *نیست*.\n\n/replacephone",parse_mode=ParseMode.MARKDOWN)
     else:
         await update.message.reply_text("از طریق گزینه های *منو* درخواست خود را بررسی نمایید.",parse_mode=ParseMode.MARKDOWN)
 
