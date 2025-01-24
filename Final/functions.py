@@ -1,4 +1,7 @@
 import datetime
+from io import BytesIO
+import sqlite3
+import pandas as pd  
 from typing import Optional
 from telegram import ChatMember, ChatMemberUpdated
 from define import CHAT_ID
@@ -58,3 +61,10 @@ def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[tup
 
     return was_member, is_member
 
+def export_table_to_csv(db_name: str, table_name: str) -> BytesIO:  
+    conn = sqlite3.connect(db_name)  
+    df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)  
+    csv_buffer = BytesIO()  
+    df.to_csv(csv_buffer, index=False)  
+    csv_buffer.seek(0)  
+    return csv_buffer  

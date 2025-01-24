@@ -4,8 +4,8 @@ from telegram.constants import  ParseMode
 from telegram import Update
 
 from database_action import  clear_details_update_id, exist_id, exist_user_code, get_register_id, update_id,allow_joined_user, update_joined
-from define import CHAT_ID
-from functions import create_temp_invite_link, extract_status_change
+from define import CHAT_ID, DB_NAME
+from functions import create_temp_invite_link, export_table_to_csv, extract_status_change
 
 
 async def handle_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -20,9 +20,13 @@ async def handle_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         elif context.user_data['reqstep'] == 2:
             allow,joined=allow_joined_user(context.user_data["username"],user_input)
             if allow :
-                update_id(user_id, context.user_data["username"])
-                bot = context.bot
                 if not joined:
+                    #check back id
+                    back_id = get_register_id(context.user_data["username"])
+                    if back_id !=0:
+                        await context.bot.ban_chat_member(chat_id=CHAT_ID, user_id=back_id, until_date=0)
+                    update_id(user_id, context.user_data["username"])
+                    bot = context.bot
                     temp_link = await create_temp_invite_link(bot)
                     photo_path = "img/join-us.jpg"
                     if update.message:
@@ -86,3 +90,15 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
     elif was_member and not is_member:
         update_joined(user_id,0)
         
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:  
+    query = update.callback_query  
+    await query.answer()  # Acknowledge the callback query  
+
+    # Handle different callback data  
+    if query.data == '1':  
+        csv_file = export_table_to_csv(db_name=DB_NAME, table_name='users')  
+        await context.bot.send_document(chat_id=update.effective_message.chat_id, document=csv_file, filename='allUsers.csv')  
+        await query.edit_message_text(text="CSV file sent!")  
+ 
+    elif query.data == '2':  
+        await query.edit_message_text(text="You selected Option 2!") 
