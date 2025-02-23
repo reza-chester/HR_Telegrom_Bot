@@ -19,8 +19,8 @@ def update_id(id, username):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute("""
-       update users set id=? where emporusername=?
-    """, (id, username))
+       update users set id=? where lower(emporusername)=?
+    """, (id, username.lower()))
     conn.commit()
     conn.close()
 
@@ -34,12 +34,30 @@ def update_joined(id,joined):
     conn.commit()
     conn.close()
 
+def insert_user(username,code):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+       INSERT INTO users (emporusername, code) VALUES (?, ?)
+    """, (username,code))
+    conn.commit()
+    conn.close()
+
+def delete_user(username):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("""
+       DELETE from users where lower(emporusername)= ?
+    """, (username.lower(),))
+    conn.commit()
+    conn.close()
+
 def clear_details_update_id(username,new_id):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute("""
-       update users set dateCreated=?, joined=?, id=? where emporusername=?
-    """, (None,0,new_id,username))
+       update users set dateCreated=?, joined=?, id=? where lower(emporusername)=?
+    """, (None,0,new_id,username.lower()))
     conn.commit()
     conn.close()
 
@@ -56,7 +74,7 @@ def exist_id(id):
 def allow_joined_user(username,code)-> Optional[tuple[bool, bool]]:
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT joined FROM users WHERE emporusername = ? and lower(code)= ?", (username,code.lower()))
+    cursor.execute("SELECT joined FROM users WHERE lower(emporusername) = ? and lower(code)= ?", (username.lower(),code.lower()))
     result = cursor.fetchone()
     conn.close()
     allow=True if result else False
@@ -66,7 +84,7 @@ def allow_joined_user(username,code)-> Optional[tuple[bool, bool]]:
 def exist_user_code(username,code)-> bool:
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE emporusername = ? and lower(code)= ?", (username,code.lower()))
+    cursor.execute("SELECT * FROM users WHERE lower(emporusername) = ? and lower(code)= ?", (username.lower(),code.lower()))
     result = cursor.fetchone()
     conn.close()
     return True if result else False
@@ -74,8 +92,18 @@ def exist_user_code(username,code)-> bool:
 def get_register_id(username)-> int:
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM users WHERE emporusername = ?", (username,))
+    cursor.execute("SELECT id FROM users WHERE lower(emporusername) = ?", (username.lower(),))
     result = cursor.fetchone()
     conn.close()
-    return int(result[0]) if result else 0
-
+    if result and result[0]: 
+        return int(result[0])  
+    else:  
+        return 0
+    
+def get_all_username_in_db():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("SELECT emporusername FROM users")
+    result = cursor.fetchall()
+    conn.close()
+    return [str(row[0]) for row in result]

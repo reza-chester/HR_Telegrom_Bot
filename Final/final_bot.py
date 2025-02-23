@@ -3,7 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, fil
 
 from define import  TOKEN
 from commands_handler import admin_channel, replace_phone, start,request,rules
-from handlers import button, handle_options,greet_chat_members
+from handlers import button, handle_document, handle_options,greet_chat_members
  
 
 
@@ -28,6 +28,7 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(button))  
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_options))
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
+    application.add_handler(MessageHandler(filters.Document.FileExtension("csv"), handle_document))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

@@ -65,6 +65,27 @@ def export_table_to_csv(db_name: str, table_name: str) -> BytesIO:
     conn = sqlite3.connect(db_name)  
     df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)  
     csv_buffer = BytesIO()  
-    df.to_csv(csv_buffer, index=False)  
-    csv_buffer.seek(0)  
+    df.to_csv(csv_buffer, index=False,header=True)  
+    csv_buffer.seek(0) 
+    conn.close() 
     return csv_buffer  
+
+async def get_user_status_in_channel(bot, channel_id, user_id):  
+    try:  
+        chat_member = await bot.get_chat_member(chat_id=channel_id, user_id=user_id)  
+        status = chat_member.status  
+        return status    
+    except Exception as e:  
+        if "User not found" in str(e):  
+            return "not_found" 
+        elif "Chat not found" in str(e):  
+            return "channel_not_found" 
+        else:  
+            print(f"خطای BadRequest: {e}")  
+            return "error" 
+    except Exception as e:  
+        print(f"خطای غیرمنتظره: {e}")  
+        return "error"  
+    
+# def fetch_users_from_final_excel(excel):
+     
